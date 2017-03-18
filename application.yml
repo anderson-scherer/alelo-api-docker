@@ -1,0 +1,4 @@
+logging.file = logs.log
+logging.level.root=DEBUG
+logging.level.org.springframework.web=DEBUG
+logging.level.org.hibernate=DEBUG

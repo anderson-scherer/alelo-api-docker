@@ -1,0 +1,9 @@
+---
+applications:
+- name: alelo-api-docker
+  memory: 1024MB
+  host: alelo-api-docker
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  Main-Class: br.com.alelo.api.AleloPrecoApi
+  services:
+    - MySQL_p2380

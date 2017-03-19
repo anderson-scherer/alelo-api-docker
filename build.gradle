@@ -4,20 +4,24 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		maven {
+      		url "https://plugins.gradle.org/m2/"
+    	}
 	}
+
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("se.transmode.gradle:gradle-docker:1.2")
+    	classpath("gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.12.0")
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'docker'
+apply plugin: 'com.palantir.docker'
 
 jar {
-	baseName = 'alelo-api-docker'
+	baseName = project.name
 	version = '0.0.2-SNAPSHOT'
 }
 sourceCompatibility = 1.8
@@ -40,20 +44,15 @@ dependencies {
 	compile ('mysql:mysql-connector-java:5.1.37')
 	compile 'org.springframework.cloud:spring-cloud-spring-service-connector:1.2.3.RELEASE'
 	compile 'org.springframework.cloud:spring-cloud-cloudfoundry-connector:1.2.3.RELEASE'
-	runtime('com.h2database:h2')
 	compile("org.springframework.boot:spring-boot-devtools")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 group = "alelodev"
 
-task docker {
-	doLast {
-		copy {
-			from 'build/libs/alelo-api-docker-0.0.2-SNAPSHOT.jar'
-			into 'docker'
-		}
-		file("docker/alelo-api-docker-0.0.2-SNAPSHOT.jar").renameTo(file("docker/app.jar"))
-
-	}
+docker {
+	name "registry.ng.bluemix.net/alelodev/" + project.name
+	dockerfile "docker/Dockerfile"
+	files tasks.jar.archivePath
+	buildArgs([app_jar: tasks.jar.archiveName, app_name: project.name])
 }

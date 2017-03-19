@@ -1,6 +1,9 @@
-FROM java:8
+FROM registry.ng.bluemix.net/ibmliberty:microProfile
+ARG app_jar
+ARG app_name
 VOLUME /tmp
-ADD app.jar app.jar
-RUN bash -c 'touch /app.jar'
+ADD $app_jar /app/
+ENV APP_JAR $app_jar
+ENV VCAP_APPLICATION {"name": "$app_name"}
 EXPOSE 8080
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar”,”>>/tmp/app.log”]
+CMD "java" "-Djava.security.egd=file:/dev/./urandom" "-Dspring.profiles.active=cloud" "-jar" "/app/$APP_JAR"

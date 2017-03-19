@@ -3,3 +3,8 @@
 .gradle
 .idea
 build
+.settings
+.vscode
+bin
+.classpath
+.project
